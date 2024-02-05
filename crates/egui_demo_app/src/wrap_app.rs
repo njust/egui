@@ -1,3 +1,4 @@
+use egui::Context;
 use egui_demo_lib::is_mobile;
 
 #[cfg(feature = "glow")]
@@ -163,8 +164,28 @@ pub struct WrapApp {
     dropped_files: Vec<egui::DroppedFile>,
 }
 
+const REGULAR_FONT: &str = "RegularFont";
+
+pub fn apply_light_theme(ctx: &Context) {
+    let mut fonts = egui::FontDefinitions::default();
+    fonts.font_data.insert(
+        REGULAR_FONT.to_string(),
+        egui::FontData::from_static(include_bytes!("../fonts/Inter-Medium.otf")),
+    );
+
+    fonts
+        .families
+        .entry(egui::FontFamily::Proportional)
+        .or_default()
+        .insert(0, REGULAR_FONT.to_string());
+
+    ctx.set_fonts(fonts);
+}
+
 impl WrapApp {
     pub fn new(cc: &eframe::CreationContext<'_>) -> Self {
+        apply_light_theme(&cc.egui_ctx);
+
         // This gives us image support:
         egui_extras::install_image_loaders(&cc.egui_ctx);
 
